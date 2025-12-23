@@ -8,16 +8,27 @@ import { useToast } from "@/hooks/use-toast";
 import { Send, Upload, FileText, X, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
+interface FileUpload {
+  file: File | null;
+  inputRef: React.RefObject<HTMLInputElement>;
+}
+
 const ApplicationForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [transcriptFile, setTranscriptFile] = useState<File | null>(null);
-  const [supportingDocsFile, setSupportingDocsFile] = useState<File | null>(null);
-  const [uploadingTranscript, setUploadingTranscript] = useState(false);
-  const [uploadingSupportingDocs, setUploadingSupportingDocs] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState("");
   
+  // File refs
   const transcriptInputRef = useRef<HTMLInputElement>(null);
+  const applicationLetterInputRef = useRef<HTMLInputElement>(null);
+  const nominationLetterInputRef = useRef<HTMLInputElement>(null);
   const supportingDocsInputRef = useRef<HTMLInputElement>(null);
+
+  // File states
+  const [transcriptFile, setTranscriptFile] = useState<File | null>(null);
+  const [applicationLetterFile, setApplicationLetterFile] = useState<File | null>(null);
+  const [nominationLetterFile, setNominationLetterFile] = useState<File | null>(null);
+  const [supportingDocsFile, setSupportingDocsFile] = useState<File | null>(null);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -39,44 +50,65 @@ const ApplicationForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (type: 'transcript' | 'supportingDocs') => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const validateFile = (file: File): boolean => {
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload a file smaller than 10MB",
+        variant: "destructive",
+      });
+      return false;
+    }
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a PDF, Word document, or image file",
+        variant: "destructive",
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handleFileChange = (type: 'transcript' | 'applicationLetter' | 'nominationLetter' | 'supportingDocs') => (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Validate file size (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        toast({
-          title: "File too large",
-          description: "Please upload a file smaller than 10MB",
-          variant: "destructive",
-        });
-        return;
-      }
-      // Validate file type
-      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-      if (!allowedTypes.includes(file.type)) {
-        toast({
-          title: "Invalid file type",
-          description: "Please upload a PDF, Word document, or image file",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      if (type === 'transcript') {
-        setTranscriptFile(file);
-      } else {
-        setSupportingDocsFile(file);
+    if (file && validateFile(file)) {
+      switch (type) {
+        case 'transcript':
+          setTranscriptFile(file);
+          break;
+        case 'applicationLetter':
+          setApplicationLetterFile(file);
+          break;
+        case 'nominationLetter':
+          setNominationLetterFile(file);
+          break;
+        case 'supportingDocs':
+          setSupportingDocsFile(file);
+          break;
       }
     }
   };
 
-  const removeFile = (type: 'transcript' | 'supportingDocs') => {
-    if (type === 'transcript') {
-      setTranscriptFile(null);
-      if (transcriptInputRef.current) transcriptInputRef.current.value = '';
-    } else {
-      setSupportingDocsFile(null);
-      if (supportingDocsInputRef.current) supportingDocsInputRef.current.value = '';
+  const removeFile = (type: 'transcript' | 'applicationLetter' | 'nominationLetter' | 'supportingDocs') => {
+    switch (type) {
+      case 'transcript':
+        setTranscriptFile(null);
+        if (transcriptInputRef.current) transcriptInputRef.current.value = '';
+        break;
+      case 'applicationLetter':
+        setApplicationLetterFile(null);
+        if (applicationLetterInputRef.current) applicationLetterInputRef.current.value = '';
+        break;
+      case 'nominationLetter':
+        setNominationLetterFile(null);
+        if (nominationLetterInputRef.current) nominationLetterInputRef.current.value = '';
+        break;
+      case 'supportingDocs':
+        setSupportingDocsFile(null);
+        if (supportingDocsInputRef.current) supportingDocsInputRef.current.value = '';
+        break;
     }
   };
 
@@ -102,23 +134,32 @@ const ApplicationForm = () => {
     
     try {
       let transcriptUrl = null;
+      let applicationLetterUrl = null;
+      let nominationLetterUrl = null;
       let supportingDocsUrl = null;
 
-      // Upload transcript if provided
       if (transcriptFile) {
-        setUploadingTranscript(true);
+        setUploadProgress("Uploading transcript...");
         transcriptUrl = await uploadFile(transcriptFile, 'transcripts');
-        setUploadingTranscript(false);
       }
 
-      // Upload supporting documents if provided
+      if (applicationLetterFile) {
+        setUploadProgress("Uploading application letter...");
+        applicationLetterUrl = await uploadFile(applicationLetterFile, 'application-letters');
+      }
+
+      if (nominationLetterFile) {
+        setUploadProgress("Uploading nomination letter...");
+        nominationLetterUrl = await uploadFile(nominationLetterFile, 'nomination-letters');
+      }
+
       if (supportingDocsFile) {
-        setUploadingSupportingDocs(true);
+        setUploadProgress("Uploading supporting documents...");
         supportingDocsUrl = await uploadFile(supportingDocsFile, 'supporting-docs');
-        setUploadingSupportingDocs(false);
       }
 
-      // Submit application to database
+      setUploadProgress("Submitting application...");
+
       const { error } = await supabase
         .from('scholarship_applications')
         .insert({
@@ -131,6 +172,8 @@ const ApplicationForm = () => {
           cgpa: formData.cgpa,
           reason: formData.reason,
           transcript_url: transcriptUrl,
+          application_letter_url: applicationLetterUrl,
+          nomination_letter_url: nominationLetterUrl,
           supporting_docs_url: supportingDocsUrl,
         });
 
@@ -155,8 +198,12 @@ const ApplicationForm = () => {
         reason: "",
       });
       setTranscriptFile(null);
+      setApplicationLetterFile(null);
+      setNominationLetterFile(null);
       setSupportingDocsFile(null);
       if (transcriptInputRef.current) transcriptInputRef.current.value = '';
+      if (applicationLetterInputRef.current) applicationLetterInputRef.current.value = '';
+      if (nominationLetterInputRef.current) nominationLetterInputRef.current.value = '';
       if (supportingDocsInputRef.current) supportingDocsInputRef.current.value = '';
       
     } catch (error) {
@@ -168,10 +215,59 @@ const ApplicationForm = () => {
       });
     } finally {
       setIsSubmitting(false);
-      setUploadingTranscript(false);
-      setUploadingSupportingDocs(false);
+      setUploadProgress("");
     }
   };
+
+  const FileUploadField = ({ 
+    label, 
+    file, 
+    inputRef, 
+    type, 
+    required = false 
+  }: { 
+    label: string; 
+    file: File | null; 
+    inputRef: React.RefObject<HTMLInputElement>; 
+    type: 'transcript' | 'applicationLetter' | 'nominationLetter' | 'supportingDocs';
+    required?: boolean;
+  }) => (
+    <div className="space-y-2">
+      <Label>{label} {required && '*'}</Label>
+      <div className="flex items-center gap-4">
+        <input
+          ref={inputRef}
+          type="file"
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+          onChange={handleFileChange(type)}
+          className="hidden"
+        />
+        {!file ? (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => inputRef.current?.click()}
+            className="border-2 shadow-xs hover:shadow-sm transition-shadow"
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            Upload
+          </Button>
+        ) : (
+          <div className="flex items-center gap-3 p-3 bg-background border-2 border-border flex-1">
+            <FileText className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+            <span className="text-sm truncate flex-1">{file.name}</span>
+            <button
+              type="button"
+              onClick={() => removeFile(type)}
+              className="p-1 hover:bg-secondary"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <section id="apply" className="py-24 bg-secondary">
@@ -304,86 +400,43 @@ const ApplicationForm = () => {
             {/* Document Upload Section */}
             <div className="space-y-6 mb-8 p-6 bg-secondary border-2 border-border">
               <div>
-                <h3 className="font-bold text-lg mb-2">Supporting Documents</h3>
+                <h3 className="font-bold text-lg mb-2">Required Documents</h3>
                 <p className="text-sm text-muted-foreground">
-                  Upload your academic transcript and any supporting documents (PDF, Word, or images up to 10MB each)
+                  Upload your documents in PDF, Word, or image format (max 10MB each)
                 </p>
               </div>
 
-              {/* Transcript Upload */}
-              <div className="space-y-2">
-                <Label>Academic Transcript</Label>
-                <div className="flex items-center gap-4">
-                  <input
-                    ref={transcriptInputRef}
-                    type="file"
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                    onChange={handleFileChange('transcript')}
-                    className="hidden"
-                    id="transcript-upload"
-                  />
-                  {!transcriptFile ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => transcriptInputRef.current?.click()}
-                      className="border-2 shadow-xs hover:shadow-sm transition-shadow"
-                    >
-                      <Upload className="w-4 h-4 mr-2" />
-                      Upload Transcript
-                    </Button>
-                  ) : (
-                    <div className="flex items-center gap-3 p-3 bg-background border-2 border-border flex-1">
-                      <FileText className="w-5 h-5 text-muted-foreground" />
-                      <span className="text-sm truncate flex-1">{transcriptFile.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeFile('transcript')}
-                        className="p-1 hover:bg-secondary"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Supporting Documents Upload */}
-              <div className="space-y-2">
-                <Label>Other Supporting Documents</Label>
-                <div className="flex items-center gap-4">
-                  <input
-                    ref={supportingDocsInputRef}
-                    type="file"
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                    onChange={handleFileChange('supportingDocs')}
-                    className="hidden"
-                    id="supporting-docs-upload"
-                  />
-                  {!supportingDocsFile ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => supportingDocsInputRef.current?.click()}
-                      className="border-2 shadow-xs hover:shadow-sm transition-shadow"
-                    >
-                      <Upload className="w-4 h-4 mr-2" />
-                      Upload Document
-                    </Button>
-                  ) : (
-                    <div className="flex items-center gap-3 p-3 bg-background border-2 border-border flex-1">
-                      <FileText className="w-5 h-5 text-muted-foreground" />
-                      <span className="text-sm truncate flex-1">{supportingDocsFile.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeFile('supportingDocs')}
-                        className="p-1 hover:bg-secondary"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-                </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                <FileUploadField
+                  label="Academic Transcript"
+                  file={transcriptFile}
+                  inputRef={transcriptInputRef}
+                  type="transcript"
+                  required
+                />
+                
+                <FileUploadField
+                  label="Application Letter"
+                  file={applicationLetterFile}
+                  inputRef={applicationLetterInputRef}
+                  type="applicationLetter"
+                  required
+                />
+                
+                <FileUploadField
+                  label="Nomination Letter"
+                  file={nominationLetterFile}
+                  inputRef={nominationLetterInputRef}
+                  type="nominationLetter"
+                  required
+                />
+                
+                <FileUploadField
+                  label="Other Supporting Documents"
+                  file={supportingDocsFile}
+                  inputRef={supportingDocsInputRef}
+                  type="supportingDocs"
+                />
               </div>
             </div>
 
@@ -396,9 +449,7 @@ const ApplicationForm = () => {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  {uploadingTranscript ? "Uploading transcript..." : 
-                   uploadingSupportingDocs ? "Uploading documents..." : 
-                   "Submitting..."}
+                  {uploadProgress || "Submitting..."}
                 </>
               ) : (
                 <>

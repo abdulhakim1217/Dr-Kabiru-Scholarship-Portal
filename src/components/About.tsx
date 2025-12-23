@@ -34,7 +34,49 @@ const About = () => {
   return (
     <section id="about" className="py-24 bg-secondary">
       <div className="container mx-auto px-4">
-        {/* Header */}
+        {/* About Dr Kabiru */}
+        <div className="grid lg:grid-cols-2 gap-12 mb-20">
+          <div>
+            <p className="text-sm font-mono uppercase tracking-widest text-muted-foreground mb-4">
+              Meet The Founder
+            </p>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+              DR. KABIRU MP
+            </h2>
+            <div className="space-y-4 text-muted-foreground">
+              <p>
+                Dr. Kabiru is a distinguished Member of Parliament and a passionate advocate 
+                for education and youth empowerment in Nigeria. With over two decades of 
+                public service, he has dedicated his career to creating opportunities for 
+                young Nigerians to access quality education.
+              </p>
+              <p>
+                Born and raised in Kano State, Dr. Kabiru understands firsthand the challenges 
+                faced by students from underprivileged backgrounds. His own educational journey, 
+                supported by mentors and community leaders, inspired him to establish this 
+                scholarship fund in 2018.
+              </p>
+              <p>
+                Through the Dr. Kabiru MP Scholarship Fund, he aims to remove financial barriers 
+                to higher education and nurture the next generation of Nigerian leaders, innovators, 
+                and change-makers.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center justify-center">
+            <div className="bg-background border-2 border-border p-8 shadow-md max-w-md">
+              <blockquote className="text-xl font-serif italic mb-4">
+                "Education is the most powerful tool we can give our youth. When we invest 
+                in a student's education, we invest in the future of our nation."
+              </blockquote>
+              <cite className="text-sm font-mono text-muted-foreground">
+                — Dr. Kabiru MP
+              </cite>
+            </div>
+          </div>
+        </div>
+
+        {/* About The Fund */}
         <div className="max-w-3xl mb-16">
           <p className="text-sm font-mono uppercase tracking-widest text-muted-foreground mb-4">
             About The Fund

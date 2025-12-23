@@ -16,12 +16,14 @@ export type Database = {
     Tables: {
       scholarship_applications: {
         Row: {
+          application_letter_url: string | null
           cgpa: string
           course: string
           created_at: string
           email: string
           full_name: string
           id: string
+          nomination_letter_url: string | null
           phone: string
           reason: string
           status: string
@@ -32,12 +34,14 @@ export type Database = {
           year_of_study: string
         }
         Insert: {
+          application_letter_url?: string | null
           cgpa: string
           course: string
           created_at?: string
           email: string
           full_name: string
           id?: string
+          nomination_letter_url?: string | null
           phone: string
           reason: string
           status?: string
@@ -48,12 +52,14 @@ export type Database = {
           year_of_study: string
         }
         Update: {
+          application_letter_url?: string | null
           cgpa?: string
           course?: string
           created_at?: string
           email?: string
           full_name?: string
           id?: string
+          nomination_letter_url?: string | null
           phone?: string
           reason?: string
           status?: string
