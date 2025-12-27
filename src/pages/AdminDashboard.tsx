@@ -9,8 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
-import { Loader2, LogOut, Search, FileText, Users, Clock, CheckCircle, XCircle } from "lucide-react";
+import { Loader2, LogOut, Search, FileText, Users, Clock, CheckCircle, XCircle, Download } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import * as XLSX from "xlsx";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Application = Tables<"scholarship_applications">;
@@ -137,6 +139,46 @@ const AdminDashboard = () => {
     navigate("/admin");
   };
 
+  const prepareExportData = () => {
+    return filteredApplications.map((app) => ({
+      "Full Name": app.full_name,
+      "Email": app.email,
+      "Phone": app.phone,
+      "Community": app.community_name,
+      "University": app.university,
+      "Course": app.course,
+      "Year of Study": app.year_of_study,
+      "CGPA": app.cgpa,
+      "Status": app.status,
+      "Reason": app.reason,
+      "Application Date": new Date(app.created_at).toLocaleDateString(),
+    }));
+  };
+
+  const exportToCSV = () => {
+    const data = prepareExportData();
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Applications");
+    XLSX.writeFile(workbook, `scholarship_applications_${new Date().toISOString().split("T")[0]}.csv`);
+    toast({
+      title: "Export Complete",
+      description: `Exported ${data.length} applications to CSV`,
+    });
+  };
+
+  const exportToExcel = () => {
+    const data = prepareExportData();
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Applications");
+    XLSX.writeFile(workbook, `scholarship_applications_${new Date().toISOString().split("T")[0]}.xlsx`);
+    toast({
+      title: "Export Complete",
+      description: `Exported ${data.length} applications to Excel`,
+    });
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "approved":
@@ -259,6 +301,22 @@ const AdminDashboard = () => {
                     <SelectItem value="rejected">Rejected</SelectItem>
                   </SelectContent>
                 </Select>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                      <Download className="h-4 w-4 mr-2" />
+                      Export
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={exportToCSV}>
+                      Export to CSV
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={exportToExcel}>
+                      Export to Excel
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               <div className="rounded-md border overflow-hidden">
