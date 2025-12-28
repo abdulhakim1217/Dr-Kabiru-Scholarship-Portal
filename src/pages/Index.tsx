@@ -12,12 +12,12 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Dr. Kabiru MP Scholarship Fund | Walewale Constituency</title>
+        <title>Dr. Kairu Tiah Mahama MP Scholarship Fund | Walewale Constituency</title>
         <meta 
           name="description" 
-          content="Apply for the Dr. Kabiru MP Scholarship Fund. Financial support for students from Walewale Constituency pursuing higher education in Ghana. Tuition assistance, mentorship, and resources available." 
+          content="Apply for the Dr. Kairu Tiah Mahama MP Scholarship Fund. Financial support for students from Walewale Constituency pursuing higher education in Ghana. Tuition assistance, mentorship, and resources available." 
         />
-        <meta name="keywords" content="scholarship, Walewale, Ghana, education, financial aid, university, Dr Kabiru, student support, North East Region" />
+        <meta name="keywords" content="scholarship, Walewale, Ghana, education, financial aid, university, Dr Kairu Tiah Mahama, student support, North East Region" />
       </Helmet>
       
       <div className="min-h-screen">

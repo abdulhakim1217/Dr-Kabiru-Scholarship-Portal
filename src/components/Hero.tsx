@@ -25,7 +25,7 @@ const Hero = () => {
             Empowering Walewale's Future Leaders
           </p>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 leading-none">
-            DR. KABIRU MP
+            DR. KAIRU MP
             <span className="block text-3xl md:text-4xl lg:text-5xl font-normal mt-2">
               SCHOLARSHIP FUND
             </span>

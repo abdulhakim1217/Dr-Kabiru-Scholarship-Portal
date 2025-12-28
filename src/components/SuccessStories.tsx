@@ -13,7 +13,7 @@ const successStories = [
     course: "Medicine",
     year: "2023",
     testimonial:
-      "The Dr. Kabiru MP Scholarship changed my life. Coming from a humble background in Walewale, I never thought I could pursue medicine. This scholarship made my dreams possible, and now I'm in my final year, ready to serve my community.",
+      "The Dr. Kairu MP Scholarship changed my life. Coming from a humble background in Walewale, I never thought I could pursue medicine. This scholarship made my dreams possible, and now I'm in my final year, ready to serve my community.",
   },
   {
     id: 2,
@@ -33,7 +33,7 @@ const successStories = [
     course: "Computer Science",
     year: "2024",
     testimonial:
-      "Thanks to this scholarship, I can focus on my studies without worrying about fees. The support from Dr. Kabiru's office has been incredible. I'm now developing tech solutions to help farmers in Northern Ghana.",
+      "Thanks to this scholarship, I can focus on my studies without worrying about fees. The support from Dr. Kairu's office has been incredible. I'm now developing tech solutions to help farmers in Northern Ghana.",
   },
 ];
 
