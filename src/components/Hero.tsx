@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
-import heroImage from "@/assets/hero-students.jpg";
+import heroImage from "@/assets/scholarship pic.jpg";
 
 const Hero = () => {
   const scrollToApply = () => {

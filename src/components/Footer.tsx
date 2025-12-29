@@ -11,7 +11,7 @@ const Footer = () => {
               DR. KABIRU MP<br />SCHOLARSHIP FUND
             </h3>
             <p className="text-primary-foreground/80">
-              Empowering the next generation of Nigerian leaders through 
+              Empowering the next generation of Walewale Constituency leaders through 
               quality education and financial support.
             </p>
           </div>
@@ -41,7 +41,7 @@ const Footer = () => {
                 className="flex items-center gap-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors"
               >
                 <Mail className="w-5 h-5 flex-shrink-0" />
-                scholarship@drkabiru.ng
+                scholarship@drkabiru.org
               </a>
               <a 
                 href="tel:+2348001234567" 
@@ -53,8 +53,7 @@ const Footer = () => {
               <div className="flex items-start gap-3 text-primary-foreground/80">
                 <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5" />
                 <span>
-                  Scholarship Office<br />
-                  Kano State, Nigeria
+                  Member of Parliamnet for Walewale Constituency, Ghana<br />
                 </span>
               </div>
             </div>

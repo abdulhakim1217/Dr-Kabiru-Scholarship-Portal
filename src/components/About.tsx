@@ -1,5 +1,5 @@
 import { GraduationCap, Users, Target, Heart, User } from "lucide-react";
-
+import drKairuImage from "@/assets/dr-kairu.jpg";
 // TODO: Replace this placeholder with the actual image import
 // import drKairuImage from "@/assets/dr-kairu.jpg";
 
@@ -83,7 +83,7 @@ const About = () => {
                 opportunities for young people in Walewale to access quality education.
               </p>
               <p>
-                Born and raised in Walewale, Dr. Kairu understands firsthand the challenges 
+                Born and raised in Janga in the North East region Ghana, Dr. Kairu understands firsthand the challenges 
                 faced by students from underprivileged backgrounds in the constituency. His own 
                 educational journey, supported by mentors and community leaders, inspired him 
                 to establish this scholarship fund.

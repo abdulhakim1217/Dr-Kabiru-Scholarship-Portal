@@ -1,37 +1,37 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Quote } from "lucide-react";
-import student1 from "@/assets/student-1.jpg";
-import student2 from "@/assets/student-2.jpg";
-import student3 from "@/assets/student-3.jpg";
+import student1 from "@/assets/WALIU-removebg-preview.png";
+import student2 from "@/assets/Hafiz Tia.jpg";
+import student3 from "@/assets/abdul profile.jpg";
 
 const successStories = [
   {
     id: 1,
-    name: "Kwame Asante",
+    name: "Yakubu Jamaldeen Seini",
     image: student1,
     university: "University of Ghana",
-    course: "Medicine",
+    course: "Public Health",
     year: "2023",
     testimonial:
       "The Dr. Kairu MP Scholarship changed my life. Coming from a humble background in Walewale, I never thought I could pursue medicine. This scholarship made my dreams possible, and now I'm in my final year, ready to serve my community.",
   },
   {
     id: 2,
-    name: "Adwoa Mensah",
+    name: "Tahiru Tia Abdul-Hafiz",
     image: student2,
-    university: "KNUST",
-    course: "Engineering",
+    university: "UDS",
+    course: "Agricultural Engineering",
     year: "2022",
     testimonial:
       "As a woman in STEM, I faced many challenges. The scholarship not only provided financial support but also connected me with mentors who believed in me. Today, I'm excelling in my engineering program and inspiring other girls from my community.",
   },
   {
     id: 3,
-    name: "Ibrahim Yakubu",
+    name: "Abdul Karim Hakim",
     image: student3,
     university: "University for Development Studies",
     course: "Computer Science",
-    year: "2024",
+    year: "2023",
     testimonial:
       "Thanks to this scholarship, I can focus on my studies without worrying about fees. The support from Dr. Kairu's office has been incredible. I'm now developing tech solutions to help farmers in Northern Ghana.",
   },
