@@ -87,23 +87,11 @@ export default {
   		},
   		fontFamily: {
   			sans: [
-  				'Space Grotesk',
-  				'ui-sans-serif',
-  				'system-ui',
-  				'-apple-system',
-  				'BlinkMacSystemFont',
-  				'Segoe UI',
-  				'Roboto',
-  				'Helvetica Neue',
-  				'Arial',
-  				'Noto Sans',
-  				'sans-serif'
+  				'Times New Roman',
+  				'Times',
+  				'serif'
   			],
   			serif: [
-  				'Lora',
-  				'ui-serif',
-  				'Georgia',
-  				'Cambria',
   				'Times New Roman',
   				'Times',
   				'serif'

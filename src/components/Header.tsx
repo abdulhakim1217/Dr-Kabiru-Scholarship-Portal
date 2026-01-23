@@ -1,6 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Sun, Moon } from "lucide-react";
 
 const Header = () => {
+  const { theme, toggleTheme } = useTheme();
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -31,12 +34,27 @@ const Header = () => {
             Apply
           </button>
         </nav>
-        <Button 
-          onClick={() => scrollToSection("apply")}
-          className="shadow-sm hover:shadow-md transition-shadow"
-        >
-          Apply Now
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className="hover:bg-secondary"
+          >
+            {theme === 'light' ? (
+              <Moon className="h-5 w-5" />
+            ) : (
+              <Sun className="h-5 w-5" />
+            )}
+          </Button>
+          <Button 
+            onClick={() => scrollToSection("apply")}
+            className="shadow-sm hover:shadow-md transition-shadow"
+          >
+            Apply Now
+          </Button>
+        </div>
       </div>
     </header>
   );
