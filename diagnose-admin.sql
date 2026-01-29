@@ -83,28 +83,31 @@ CREATE POLICY "Admins can view all roles" ON public.user_roles
   );
 
 -- Step 8: Fix admin role assignment
-DO $
+DO $$
 DECLARE
     admin_user_id uuid;
 BEGIN
     -- Get the actual admin user UUID
     SELECT id INTO admin_user_id 
     FROM auth.users 
-    WHERE email = 'admin@drkabiruscholarship.com';
+    WHERE email = 'admin@drkabiruscholarship.com'
+    LIMIT 1;
     
     IF admin_user_id IS NOT NULL THEN
         -- Delete any incorrect admin role entries
         DELETE FROM public.user_roles WHERE role = 'admin';
         
-        -- Insert correct admin role
+        -- Insert correct admin role, avoid duplicate
         INSERT INTO public.user_roles (user_id, role)
-        VALUES (admin_user_id, 'admin');
+        VALUES (admin_user_id, 'admin')
+        ON CONFLICT (user_id, role) DO NOTHING;
         
         RAISE NOTICE 'Admin role fixed for user: %', admin_user_id;
     ELSE
         RAISE NOTICE 'ERROR: Admin user not found in auth.users. Please create user first.';
     END IF;
-END $;
+END;
+$$ LANGUAGE plpgsql;
 
 -- Step 9: Final verification
 SELECT 
