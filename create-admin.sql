@@ -9,7 +9,7 @@
 
 -- 2. Run this SQL to add admin role (replace USER_UUID_HERE with actual UUID)
 INSERT INTO public.user_roles (user_id, role)
-VALUES ('22d19fab-8579-4f84-a9e2-0351bc6000e1', 'admin')
+VALUES ('24a28737-4b89-4c39-b461-894ed0b6439c', 'admin')
 ON CONFLICT (user_id, role) DO NOTHING;
 
 -- 3. Verify the admin user was created
