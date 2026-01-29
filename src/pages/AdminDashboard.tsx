@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -30,13 +30,13 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     checkAuthAndFetch();
-  }, []);
+  }, [checkAuthAndFetch]);
 
   useEffect(() => {
     filterApplications();
-  }, [applications, searchTerm, statusFilter]);
+  }, [filterApplications]);
 
-  const checkAuthAndFetch = async () => {
+  const checkAuthAndFetch = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session?.user) {
@@ -58,7 +58,7 @@ const AdminDashboard = () => {
     }
 
     fetchApplications();
-  };
+  }, [navigate]);
 
   const fetchApplications = async () => {
     try {
@@ -80,7 +80,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const filterApplications = () => {
+  const filterApplications = useCallback(() => {
     let filtered = applications;
 
     if (searchTerm) {
@@ -99,7 +99,7 @@ const AdminDashboard = () => {
     }
 
     setFilteredApplications(filtered);
-  };
+  }, [applications, searchTerm, statusFilter]);
 
   const updateStatus = async (id: string, newStatus: string) => {
     setIsUpdating(true);

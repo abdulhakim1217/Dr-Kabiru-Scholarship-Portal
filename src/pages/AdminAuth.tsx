@@ -39,7 +39,7 @@ const AdminAuth = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate]);
 
   const checkAdminRole = async (userId: string) => {
     try {

@@ -10,11 +10,11 @@ interface AuthContextType {
   session: Session | null;
   userRole: UserRole | null;
   loading: boolean;
-  signUp: (email: string, password: string, userData?: any) => Promise<any>;
-  signIn: (email: string, password: string) => Promise<any>;
+  signUp: (email: string, password: string, userData?: Record<string, unknown>) => Promise<unknown>;
+  signIn: (email: string, password: string) => Promise<unknown>;
   signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<any>;
-  updateProfile: (updates: any) => Promise<any>;
+  resetPassword: (email: string) => Promise<unknown>;
+  updateProfile: (updates: Record<string, unknown>) => Promise<unknown>;
   hasRole: (role: UserRole) => boolean;
 }
 
@@ -86,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signUp = async (email: string, password: string, userData?: any) => {
+  const signUp = async (email: string, password: string, userData?: Record<string, unknown>) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -128,7 +128,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
-  const updateProfile = async (updates: any) => {
+  const updateProfile = async (updates: Record<string, unknown>) => {
     if (!user) throw new Error('No user logged in');
 
     const { error } = await supabase
