@@ -420,7 +420,7 @@ INSERT INTO public.scholarship_configurations (
   required_documents,
   essay_questions
 ) VALUES (
-  'Dr. Kairu Tiah Mahama MP Scholarship 2025',
+  'Dr. Kabiru Tiah Mahama MP Scholarship 2025',
   'Annual scholarship program for students from Walewale Constituency',
   '2025-01-01 00:00:00+00',
   '2025-12-31 23:59:59+00',

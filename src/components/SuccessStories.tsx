@@ -13,7 +13,7 @@ const successStories = [
     course: "Public Health",
     year: "2023",
     testimonial:
-      "The Dr. Kairu MP Scholarship changed my life. Coming from a humble background in Walewale, I never thought I could pursue medicine. This scholarship made my dreams possible, and now I'm in my final year, ready to serve my community.",
+      "The Dr. Kabiru MP Scholarship changed my life. Coming from a humble background in Walewale, I never thought I could pursue medicine. This scholarship made my dreams possible, and now I'm in my final year, ready to serve my community.",
   },
   {
     id: 2,
