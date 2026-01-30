@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Login Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        input { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Simple Login Test</h1>
+    <p>Test different user credentials to isolate the issue</p>
+    
+    <div>
+        <h3>Your Supabase Config:</h3>
+        <input type="text" id="supabaseUrl" value="https://tpwvsbvlgmdebvhmmoub.supabase.co" />
+        <input type="text" id="supabaseKey" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRwd3ZzYnZsZ21kZWJ2aG1tb3ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY0NzczNTksImV4cCI6MjA4MjA1MzM1OX0.qFPfPkVRMV1GfMIBS5ym7Qn9gbAHy49DZmWh1fpJ0S0" />
+        
+        <h3>Test Credentials:</h3>
+        <input type="email" id="testEmail" placeholder="Enter email to test" />
+        <input type="password" id="testPassword" placeholder="Enter password to test" />
+        
+        <button onclick="testLogin()">🧪 Test Login</button>
+        <button onclick="testAdminCredentials()">🔑 Test Admin Credentials</button>
+        <button onclick="testSimpleCredentials()">👤 Test Simple Credentials</button>
+        <button onclick="createTestUser()">➕ Create Test User</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        const supabaseUrl = 'https://tpwvsbvlgmdebvhmmoub.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRwd3ZzYnZsZ21kZWJ2aG1tb3ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY0NzczNTksImV4cCI6MjA4MjA1MzM1OX0.qFPfPkVRMV1GfMIBS5ym7Qn9gbAHy49DZmWh1fpJ0S0';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            results.appendChild(div);
+        }
+        
+        async function testLogin() {
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+            
+            if (!email || !password) {
+                addResult('Please enter email and password', 'error');
+                return;
+            }
+            
+            addResult(`🔄 Testing login for: ${email}`, 'info');
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    addResult(`❌ Login failed: ${error.message}`, 'error');
+                } else {
+                    addResult(`✅ Login successful! User ID: ${data.user.id}`, 'success');
+                    addResult(`📧 Email: ${data.user.email}`, 'success');
+                    addResult(`✉️ Email confirmed: ${data.user.email_confirmed_at ? 'Yes' : 'No'}`, data.user.email_confirmed_at ? 'success' : 'error');
+                    
+                    // Sign out after test
+                    await supabase.auth.signOut();
+                    addResult('🚪 Signed out after test', 'info');
+                }
+            } catch (err) {
+                addResult(`❌ Unexpected error: ${err.message}`, 'error');
+            }
+        }
+        
+        async function testAdminCredentials() {
+            document.getElementById('testEmail').value = 'admin@drkabiruscholarship.com';
+            document.getElementById('testPassword').value = 'DrKabiru2025!Admin';
+            await testLogin();
+        }
+        
+        async function testSimpleCredentials() {
+            document.getElementById('testEmail').value = 'test@admin.com';
+            document.getElementById('testPassword').value = 'admin123';
+            await testLogin();
+        }
+        
+        async function createTestUser() {
+            addResult('🔄 Creating test user: test@admin.com / admin123', 'info');
+            
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: 'test@admin.com',
+                    password: 'admin123'
+                });
+                
+                if (error) {
+                    addResult(`❌ User creation failed: ${error.message}`, 'error');
+                } else {
+                    addResult(`✅ Test user created successfully!`, 'success');
+                    addResult(`📧 User ID: ${data.user.id}`, 'success');
+                    addResult(`💡 Now go to Supabase Auth > Users and confirm the email`, 'info');
+                }
+            } catch (err) {
+                addResult(`❌ Unexpected error: ${err.message}`, 'error');
+            }
+        }
+    </script>
+    
+    <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+        <h3>📋 Test Strategy:</h3>
+        <ol>
+            <li><strong>Test Admin Credentials:</strong> Click "Test Admin Credentials" to test the exact admin login</li>
+            <li><strong>Create Test User:</strong> Click "Create Test User" to make a simple test account</li>
+            <li><strong>Test Simple Credentials:</strong> After confirming the test user email, test with simple credentials</li>
+            <li><strong>Compare Results:</strong> If simple user works but admin doesn't, the issue is with the admin user specifically</li>
+        </ol>
+        
+        <h3>🔍 What to look for:</h3>
+        <ul>
+            <li><strong>✅ Login successful:</strong> Authentication is working</li>
+            <li><strong>❌ Invalid login credentials:</strong> User doesn't exist or wrong password</li>
+            <li><strong>❌ Email not confirmed:</strong> User exists but email needs confirmation</li>
+        </ul>
+    </div>
+</body>
+</html>
